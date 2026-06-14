@@ -117,6 +117,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <nav className="flex-1 px-4 space-y-1">
             {navItems.map((item) => {
               if (item.adminOnly && !user.isAdmin) return null;
+              if (user.isAdmin && (item.href === "/medicines" || item.href === "/reminders")) return null;
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
@@ -219,6 +220,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <nav className="flex-1 space-y-1">
                 {navItems.map((item) => {
                   if (item.adminOnly && !user.isAdmin) return null;
+                  if (user.isAdmin && (item.href === "/medicines" || item.href === "/reminders")) return null;
                   const isActive = pathname === item.href;
                   const Icon = item.icon;
                   return (

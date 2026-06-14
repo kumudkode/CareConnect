@@ -1,92 +1,367 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { dataService, ChatSession, ChatMessage } from "@/lib/data-service";
 import DashboardLayout from "@/components/DashboardLayout";
-import { 
-  Bot, 
-  Send, 
-  Image as ImageIcon, 
-  Mic, 
-  MicOff, 
-  Plus, 
+import {
+  Send,
+  Image as ImageIcon,
+  Mic,
+  Plus,
   MessageSquare,
   Sparkles,
-  ArrowRight,
-  Activity
+  Activity,
+  Heart,
+  AlertTriangle,
+  Info,
+  Lightbulb,
+  X,
 } from "lucide-react";
 
+// ─── Maya's Avatar SVG ────────────────────────────────────────────────────────
+const MayaAvatar = ({ size = 32, pulse = false }: { size?: number; pulse?: boolean }) => (
+  <div
+    style={{ width: size, height: size }}
+    className={`relative rounded-xl bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500 flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/20 ${pulse ? "animate-pulse" : ""}`}
+  >
+    <Heart className="w-4 h-4 text-white" fill="white" />
+    {/* Online dot */}
+    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-slate-950" />
+  </div>
+);
+
+// ─── Simple but powerful Markdown renderer ────────────────────────────────────
+const MarkdownRenderer = ({ text }: { text: string }) => {
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+
+  const renderInline = (str: string): React.ReactNode => {
+    // Bold **text**
+    const parts = str.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, idx) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={idx} className="font-semibold text-slate-100">{part.slice(2, -2)}</strong>;
+      }
+      // Italic *text*
+      if (part.startsWith("*") && part.endsWith("*") && part.length > 2) {
+        return <em key={idx} className="italic text-slate-300">{part.slice(1, -1)}</em>;
+      }
+      return <span key={idx}>{part}</span>;
+    });
+  };
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Blank line
+    if (line.trim() === "") { i++; continue; }
+
+    // Alert blocks: > [!WARNING], > [!NOTE], > [!IMPORTANT]
+    if (line.startsWith("> [!")) {
+      const alertMatch = line.match(/^> \[!(WARNING|NOTE|IMPORTANT|CAUTION|TIP)\]/i);
+      const alertType = alertMatch?.[1]?.toUpperCase();
+      const alertLines: string[] = [];
+      i++;
+      while (i < lines.length && lines[i].startsWith("> ")) {
+        alertLines.push(lines[i].slice(2));
+        i++;
+      }
+      const configs: Record<string, { color: string; bg: string; border: string; icon: React.ReactNode; label: string }> = {
+        WARNING: { color: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/30", icon: <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />, label: "Warning" },
+        NOTE: { color: "text-blue-300", bg: "bg-blue-500/10", border: "border-blue-500/30", icon: <Info className="w-4 h-4 shrink-0 mt-0.5" />, label: "Note" },
+        IMPORTANT: { color: "text-violet-300", bg: "bg-violet-500/10", border: "border-violet-500/30", icon: <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />, label: "Important" },
+        CAUTION: { color: "text-rose-300", bg: "bg-rose-500/10", border: "border-rose-500/30", icon: <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />, label: "Caution" },
+        TIP: { color: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/30", icon: <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" />, label: "Tip" },
+      };
+      const cfg = configs[alertType || "NOTE"] || configs.NOTE;
+      elements.push(
+        <div key={i} className={`flex items-start gap-2 p-3 rounded-xl border ${cfg.bg} ${cfg.border} ${cfg.color} text-xs my-2`}>
+          {cfg.icon}
+          <div>
+            <span className="font-bold uppercase text-[10px] tracking-wider">{cfg.label}: </span>
+            {alertLines.map((al, ai) => <span key={ai}>{renderInline(al)} </span>)}
+          </div>
+        </div>
+      );
+      continue;
+    }
+
+    // Table
+    if (line.includes("|") && lines[i + 1]?.includes("---")) {
+      const headerCells = line.split("|").filter(c => c.trim()).map(c => c.trim());
+      i += 2; // skip separator
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].includes("|")) {
+        rows.push(lines[i].split("|").filter(c => c.trim()).map(c => c.trim()));
+        i++;
+      }
+      elements.push(
+        <div key={i} className="overflow-x-auto my-3">
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="border-b border-slate-700">
+                {headerCells.map((h, hi) => (
+                  <th key={hi} className="text-left py-2 px-3 font-semibold text-teal-300">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, ri) => (
+                <tr key={ri} className="border-b border-slate-800/50">
+                  {row.map((cell, ci) => (
+                    <td key={ci} className="py-2 px-3 text-slate-300">{renderInline(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      continue;
+    }
+
+    // Headings
+    if (line.startsWith("### ")) {
+      elements.push(<h4 key={i} className="text-sm font-bold text-teal-400 mt-4 mb-1">{renderInline(line.slice(4))}</h4>);
+      i++; continue;
+    }
+    if (line.startsWith("## ")) {
+      elements.push(<h3 key={i} className="text-base font-bold text-teal-300 mt-4 mb-2">{renderInline(line.slice(3))}</h3>);
+      i++; continue;
+    }
+    if (line.startsWith("# ")) {
+      elements.push(<h2 key={i} className="text-lg font-bold text-white mt-4 mb-2">{renderInline(line.slice(2))}</h2>);
+      i++; continue;
+    }
+
+    // Unordered list
+    if (line.match(/^[-*•]\s/)) {
+      const listItems: string[] = [];
+      while (i < lines.length && lines[i].match(/^[-*•]\s/)) {
+        listItems.push(lines[i].replace(/^[-*•]\s/, ""));
+        i++;
+      }
+      elements.push(
+        <ul key={i} className="list-none space-y-1.5 my-2">
+          {listItems.map((item, ii) => (
+            <li key={ii} className="flex items-start gap-2 text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-1.5 shrink-0" />
+              <span className="text-slate-300">{renderInline(item)}</span>
+            </li>
+          ))}
+        </ul>
+      );
+      continue;
+    }
+
+    // Ordered list
+    if (line.match(/^\d+\.\s/)) {
+      const listItems: string[] = [];
+      while (i < lines.length && lines[i].match(/^\d+\.\s/)) {
+        listItems.push(lines[i].replace(/^\d+\.\s/, ""));
+        i++;
+      }
+      elements.push(
+        <ol key={i} className="space-y-1.5 my-2 pl-1">
+          {listItems.map((item, ii) => (
+            <li key={ii} className="flex items-start gap-2 text-sm">
+              <span className="w-5 h-5 rounded-md bg-teal-500/20 text-teal-400 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{ii + 1}</span>
+              <span className="text-slate-300">{renderInline(item)}</span>
+            </li>
+          ))}
+        </ol>
+      );
+      continue;
+    }
+
+    // Horizontal rule
+    if (line.trim() === "---" || line.trim() === "***") {
+      elements.push(<hr key={i} className="border-slate-800 my-3" />);
+      i++; continue;
+    }
+
+    // Normal paragraph
+    elements.push(
+      <p key={i} className="text-sm text-slate-300 leading-relaxed">{renderInline(line)}</p>
+    );
+    i++;
+  }
+
+  return <div className="space-y-1.5">{elements}</div>;
+};
+
+// ─── Main Chat Page ───────────────────────────────────────────────────────────
 export default function ChatPage() {
   const { user } = useAuth();
-  
+
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
   const [isRecording, setIsRecording] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [loading, setLoading] = useState(true);
-  
+  const [loadingSession, setLoadingSession] = useState(true);
+  const [introLoading, setIntroLoading] = useState(false);
+  const [errorState, setErrorState] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
 
-  // Load chat sessions on component mount
+  // Initialize Web Speech API SpeechRecognition
   useEffect(() => {
-    if (!user) return;
-    
-    const loadSessions = async () => {
-      try {
-        const list = await dataService.getChatSessions(user.uid);
-        setSessions(list);
-        if (list.length > 0) {
-          setCurrentSessionId(list[0].id);
-          setMessages(list[0].messages);
-        } else {
-          // Create a default session if empty
-          const newSession = await dataService.createChatSession(user.uid, "New Consultation Session");
-          setSessions([newSession]);
-          setCurrentSessionId(newSession.id);
-          setMessages([]);
-        }
-      } catch (e) {
-        console.error("Failed to load chat sessions:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadSessions();
-  }, [user]);
+    if (typeof window !== "undefined") {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = "en-US";
 
-  // Scroll to bottom whenever messages list changes
+        recognition.onresult = (event: any) => {
+          if (event.results && event.results[0] && event.results[0][0]) {
+            const transcript = event.results[0][0].transcript;
+            setInput((prev) => prev + (prev ? " " : "") + transcript);
+          }
+        };
+
+        recognition.onerror = (event: any) => {
+          console.error("Speech recognition error:", event.error);
+          if (event.error !== "no-speech") {
+            setErrorState(`Voice recognition error: ${event.error}`);
+          }
+          setIsRecording(false);
+        };
+
+        recognition.onend = () => {
+          setIsRecording(false);
+        };
+
+        recognitionRef.current = recognition;
+      }
+    }
+  }, []);
+
+  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, generating]);
 
+  // ── Fetch Maya's intro for a fresh session ──────────────────────
+  const fetchMayaIntro = useCallback(
+    async (sessionId: string) => {
+      if (!user) return;
+      setIntroLoading(true);
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "introduce",
+            userName: user.displayName || undefined,
+          }),
+        });
+        const data = await res.json();
+        const introText =
+          data.reply ||
+          "Hi! I'm **Maya**, your CareConnect AI Health Companion. How can I help you today?";
+
+        const introMsg: Omit<ChatMessage, "id"> = {
+          sender: "ai",
+          text: introText,
+          timestamp: new Date().toISOString(),
+        };
+        const saved = await dataService.addMessageToSession(
+          user.uid,
+          sessionId,
+          introMsg
+        );
+        setMessages([saved]);
+
+        // Update session in local state
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === sessionId
+              ? { ...s, messages: [saved] }
+              : s
+          )
+        );
+      } catch (err) {
+        console.error("Failed to fetch Maya intro:", err);
+      } finally {
+        setIntroLoading(false);
+      }
+    },
+    [user]
+  );
+
+  // ── Load sessions on mount ──────────────────────────────────────
+  useEffect(() => {
+    if (!user) return;
+    const load = async () => {
+      try {
+        const list = await dataService.getChatSessions(user.uid);
+        setSessions(list);
+        if (list.length > 0) {
+          const first = list[0];
+          setCurrentSessionId(first.id);
+          setMessages(first.messages || []);
+          // If the latest session has no messages, fetch intro
+          if (!first.messages || first.messages.length === 0) {
+            fetchMayaIntro(first.id);
+          }
+        } else {
+          const newSess = await dataService.createChatSession(
+            user.uid,
+            "New Consultation"
+          );
+          setSessions([newSess]);
+          setCurrentSessionId(newSess.id);
+          setMessages([]);
+          fetchMayaIntro(newSess.id);
+        }
+      } catch (e) {
+        console.error("Failed to load sessions:", e);
+      } finally {
+        setLoadingSession(false);
+      }
+    };
+    load();
+  }, [user, fetchMayaIntro]);
+
+  // ── New session ────────────────────────────────────────────────
   const handleNewSession = async () => {
     if (!user) return;
     try {
-      const newSession = await dataService.createChatSession(user.uid, "New Consultation Session");
-      setSessions(prev => [newSession, ...prev]);
-      setCurrentSessionId(newSession.id);
+      const s = await dataService.createChatSession(
+        user.uid,
+        "New Consultation"
+      );
+      setSessions((prev) => [s, ...prev]);
+      setCurrentSessionId(s.id);
       setMessages([]);
+      setErrorState(null);
+      fetchMayaIntro(s.id);
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleSelectSession = (id: string) => {
-    const session = sessions.find(s => s.id === id);
+    const session = sessions.find((s) => s.id === id);
     if (session) {
       setCurrentSessionId(id);
-      setMessages(session.messages);
+      setMessages(session.messages || []);
+      setErrorState(null);
     }
   };
 
+  // ── File handling ──────────────────────────────────────────────
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -101,222 +376,334 @@ export default function ChatPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // ── Voice Input (Web Speech API) ──────────────────────────────────
   const triggerVoiceInput = () => {
+    if (!recognitionRef.current) {
+      setErrorState("Speech recognition is not supported in this browser. Please use Chrome/Safari/Edge.");
+      return;
+    }
+
     if (isRecording) {
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.error("Stop SpeechRecognition error:", err);
+      }
       setIsRecording(false);
-      setInput(prev => prev + " What is the dosage instructions for Lisinopril?");
     } else {
       setIsRecording(true);
       setErrorState(null);
+      try {
+        recognitionRef.current.start();
+      } catch (err: any) {
+        console.error("Start SpeechRecognition error:", err);
+        setIsRecording(false);
+        setErrorState("Could not access microphone or initiate voice input.");
+      }
     }
   };
 
-  const [errorState, setErrorState] = useState<string | null>(null);
-
+  // ── Send message ───────────────────────────────────────────────
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if ((!input.trim() && !imageFile) || generating || !user || !currentSessionId) return;
+    if (
+      (!input.trim() && !imageFile) ||
+      generating ||
+      !user ||
+      !currentSessionId
+    )
+      return;
 
-    const userText = input;
+    const userText = input.trim();
     const currentImg = imagePreview;
-    
-    // Clear input box and preview
     setInput("");
     clearImage();
     setGenerating(true);
     setErrorState(null);
 
-    // 1. Add user message locally and to data service
+    // 1. Save user message
     const userMsg: Omit<ChatMessage, "id"> = {
       sender: "user",
-      text: userText,
+      text: userText || "📎 [Image attached]",
       timestamp: new Date().toISOString(),
-      ...(currentImg ? { image: currentImg } : {})
+      ...(currentImg ? { image: currentImg } : {}),
     };
 
     try {
-      const addedUserMsg = await dataService.addMessageToSession(user.uid, currentSessionId, userMsg);
-      setMessages(prev => [...prev, addedUserMsg]);
+      const addedUser = await dataService.addMessageToSession(
+        user.uid,
+        currentSessionId,
+        userMsg
+      );
+      setMessages((prev) => [...prev, addedUser]);
 
-      // 2. Prepare request contents history
-      const history = [...messages, addedUserMsg].map(m => ({
-        role: m.sender === "user" ? "user" as const : "model" as const,
-        content: m.text
-      }));
+      // 2. Build history (user + AI turns only, skip empty)
+      const history = [...messages, addedUser]
+        .filter((m) => m.text)
+        .map((m) => ({
+          role: m.sender === "user" ? "user" as const : "model" as const,
+          content: m.text,
+        }));
 
-      // 3. Post to AI API route
-      const aiResponse = await fetch("/api/chat", {
+      // 3. Call Maya API
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history })
+        body: JSON.stringify({ messages: history }),
       });
 
-      if (!aiResponse.ok) {
-        throw new Error("Failed to receive feedback from server.");
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(
+          errData.error || "Maya couldn't process your request."
+        );
       }
 
-      const resJson = await aiResponse.json();
-      const replyText = resJson.reply;
+      const { reply } = await res.json();
 
-      // 4. Add AI message locally and save
+      // 4. Save AI message
       const aiMsg: Omit<ChatMessage, "id"> = {
         sender: "ai",
-        text: replyText,
-        timestamp: new Date().toISOString()
+        text: reply,
+        timestamp: new Date().toISOString(),
       };
-      
-      const addedAiMsg = await dataService.addMessageToSession(user.uid, currentSessionId, aiMsg);
-      setMessages(prev => [...prev, addedAiMsg]);
+      const addedAi = await dataService.addMessageToSession(
+        user.uid,
+        currentSessionId,
+        aiMsg
+      );
+      setMessages((prev) => [...prev, addedAi]);
 
-      // Update session title in side list if it was a default title
-      const currentSession = sessions.find(s => s.id === currentSessionId);
-      if (currentSession && currentSession.title === "New Consultation Session") {
-        const shortTitle = userText.length > 25 ? userText.slice(0, 22) + "..." : userText;
-        currentSession.title = shortTitle;
-        setSessions([...sessions]);
-        await dataService.updateMedicine(user.uid, currentSessionId, { name: shortTitle } as any); // Note: updating chat session using matching helper
+      // 5. Auto-rename session from first user message
+      const sess = sessions.find((s) => s.id === currentSessionId);
+      if (
+        sess &&
+        (sess.title === "New Consultation" || sess.title === "New Consultation Session") &&
+        userText
+      ) {
+        const title = userText.length > 28 ? userText.slice(0, 26) + "…" : userText;
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === currentSessionId ? { ...s, title } : s
+          )
+        );
       }
+
+      inputRef.current?.focus();
     } catch (err: any) {
       console.error(err);
-      setErrorState(err.message || "Failed to connect to the Gemini backend.");
+      setErrorState(
+        err.message ||
+          "Maya is having trouble connecting. Please try again in a moment."
+      );
     } finally {
       setGenerating(false);
     }
   };
 
+  // ── Quick suggestion chips ─────────────────────────────────────
+  const suggestions = [
+    "What are the side effects of Metformin?",
+    "Explain my blood pressure readings",
+    "How to take Amoxicillin correctly?",
+    "What is HbA1c in a blood test?",
+  ];
+
+  const isEmptySession = messages.length === 0 && !introLoading;
+
   return (
     <DashboardLayout>
-      <div className="h-[calc(100vh-180px)] flex gap-6 overflow-hidden relative">
-        {/* Left Sessions Sidebar */}
-        <div className="hidden lg:flex flex-col w-72 bg-slate-900/20 border border-slate-900 rounded-2xl p-4 shrink-0 overflow-hidden">
+      <div className="h-[calc(100vh-180px)] flex gap-5 overflow-hidden relative">
+
+        {/* ── Sessions Sidebar ── */}
+        <div className="hidden lg:flex flex-col w-64 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-3 shrink-0 overflow-hidden backdrop-blur-sm">
           <button
             onClick={handleNewSession}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-teal-500/20 hover:border-teal-500/40 bg-teal-500/5 hover:bg-teal-500/10 text-teal-300 text-sm font-semibold rounded-xl transition-all duration-200 mb-4"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-teal-500/25 hover:border-teal-500/50 bg-gradient-to-r from-teal-500/8 to-cyan-500/8 hover:from-teal-500/15 hover:to-cyan-500/15 text-teal-300 text-xs font-semibold rounded-xl transition-all duration-200 mb-3 group"
           >
-            <Plus className="w-4 h-4" />
-            New Consultation
+            <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-200" />
+            New Session with Maya
           </button>
 
-          <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-            {loading ? (
-              <div className="text-center text-slate-500 text-xs py-10">Loading consultations...</div>
+          <div className="flex-1 overflow-y-auto space-y-1 pr-0.5 scrollbar-thin">
+            {loadingSession ? (
+              <div className="space-y-2 p-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-10 bg-slate-800/40 rounded-xl animate-pulse" />
+                ))}
+              </div>
             ) : (
               sessions.map((session) => (
                 <button
                   key={session.id}
                   onClick={() => handleSelectSession(session.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left border text-xs font-semibold transition-all duration-200 ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left border text-xs font-medium transition-all duration-150 ${
                     session.id === currentSessionId
-                      ? "bg-slate-900 border-slate-800 text-teal-300"
-                      : "bg-transparent border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/30"
+                      ? "bg-gradient-to-r from-teal-500/12 to-cyan-500/8 border-teal-500/30 text-teal-200"
+                      : "bg-transparent border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                   }`}
                 >
-                  <MessageSquare className="w-4 h-4 text-slate-500 shrink-0" />
+                  <MessageSquare className="w-3.5 h-3.5 shrink-0 opacity-60" />
                   <span className="truncate flex-1">{session.title}</span>
                 </button>
               ))
             )}
           </div>
-        </div>
 
-        {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col bg-slate-900/20 border border-slate-900 rounded-2xl overflow-hidden relative">
-          {/* Header Banner */}
-          <div className="bg-slate-900/40 border-b border-slate-900 px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center">
-                <Bot className="w-4.5 h-4.5 text-teal-400" />
-              </div>
+          {/* Maya branding */}
+          <div className="mt-3 pt-3 border-t border-slate-800/60">
+            <div className="flex items-center gap-2 px-2">
+              <MayaAvatar size={24} />
               <div>
-                <h3 className="text-sm font-bold text-slate-200">Clinical AI Assistant</h3>
-                <p className="text-[10px] text-slate-500">Gemini 2.5 Flash Model active</p>
+                <p className="text-[10px] font-bold text-slate-300">Maya AI</p>
+                <p className="text-[9px] text-slate-500">Powered by Groq LLaMA 3.3</p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs text-slate-400 font-semibold">Ready</span>
+          </div>
+        </div>
+
+        {/* ── Main Chat Area ── */}
+        <div className="flex-1 flex flex-col bg-slate-900/20 border border-slate-800/60 rounded-2xl overflow-hidden relative backdrop-blur-sm">
+
+          {/* Header */}
+          <div className="bg-slate-900/50 border-b border-slate-800/60 px-5 py-3.5 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <MayaAvatar size={36} />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-white">Maya</h3>
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 bg-teal-500/15 border border-teal-500/25 text-teal-400 rounded-full">
+                    AI Health Companion
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  CareConnect • Groq LLaMA 3.3 70B • Always here for you
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
+              <span className="text-[10px] text-slate-400 font-medium">Online</span>
             </div>
           </div>
 
-          {/* Messages Log */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-5">
+
+            {/* Loading intro state */}
+            {introLoading && messages.length === 0 && (
+              <div className="flex items-start gap-3">
+                <MayaAvatar size={32} pulse />
+                <div className="p-4 rounded-2xl rounded-tl-none bg-slate-900/60 border border-slate-800/60 flex items-center gap-2">
+                  <span className="text-xs text-slate-400 italic">Maya is preparing to greet you…</span>
+                  <div className="flex items-end gap-1 h-4">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce"
+                        style={{ animationDelay: `${i * 0.15}s` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {isEmptySession && (
+              <div className="flex flex-col items-center justify-center h-full gap-6 text-center px-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500 flex items-center justify-center shadow-2xl shadow-teal-500/30">
+                    <Heart className="w-8 h-8 text-white" fill="white" />
+                  </div>
+                  <div className="absolute -inset-3 bg-teal-500/10 rounded-3xl blur-xl animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">Start chatting with Maya</h3>
+                  <p className="text-sm text-slate-400 max-w-xs">
+                    Your AI health companion is ready to help with medicines, prescriptions, reports and health questions.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Messages list */}
             {messages.map((msg) => {
               const isAi = msg.sender === "ai";
               return (
-                <div 
+                <div
                   key={msg.id}
-                  className={`flex items-start gap-4 ${isAi ? "" : "flex-row-reverse"}`}
+                  className={`flex items-start gap-3 ${isAi ? "" : "flex-row-reverse"}`}
                 >
                   {/* Avatar */}
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
-                    isAi 
-                      ? "bg-teal-500/10 border-teal-500/20 text-teal-400" 
-                      : "bg-slate-800 border-slate-700 text-slate-300"
-                  }`}>
-                    {isAi ? <Bot className="w-4 h-4" /> : <Activity className="w-4 h-4" />}
-                  </div>
+                  {isAi ? (
+                    <MayaAvatar size={32} />
+                  ) : (
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-700 to-slate-600 border border-slate-600 flex items-center justify-center shrink-0">
+                      <Activity className="w-4 h-4 text-slate-300" />
+                    </div>
+                  )}
 
-                  {/* Body Box */}
-                  <div className="max-w-[75%] space-y-2">
-                    <div className={`p-4 rounded-2xl border text-sm leading-relaxed ${
-                      isAi 
-                        ? "bg-slate-900/60 border-slate-900 text-slate-300 rounded-tl-none" 
-                        : "bg-gradient-to-tr from-teal-500/10 to-blue-500/10 border-teal-500/20 text-slate-100 rounded-tr-none"
-                    }`}>
+                  {/* Message bubble */}
+                  <div className={`max-w-[80%] space-y-1 ${isAi ? "" : "items-end flex flex-col"}`}>
+                    {/* Sender label */}
+                    <span className={`text-[9px] font-semibold px-1 ${isAi ? "text-teal-400" : "text-slate-400"}`}>
+                      {isAi ? "Maya" : (user?.displayName?.split(" ")[0] || "You")}
+                    </span>
+
+                    <div
+                      className={`px-4 py-3 rounded-2xl border text-sm leading-relaxed ${
+                        isAi
+                          ? "bg-slate-900/70 border-slate-800/70 text-slate-300 rounded-tl-none"
+                          : "bg-gradient-to-br from-teal-500/15 to-cyan-500/10 border-teal-500/25 text-slate-100 rounded-tr-none"
+                      }`}
+                    >
                       {msg.image && (
-                        <img 
-                          src={msg.image} 
-                          alt="Attachment" 
-                          className="max-h-60 rounded-xl border border-slate-800 mb-3"
+                        <img
+                          src={msg.image}
+                          alt="Attachment"
+                          className="max-h-56 rounded-xl border border-slate-700 mb-3 object-contain"
                         />
                       )}
-                      {/* Simple Markdown Renderer simulation for paragraphs and lists */}
-                      <div className="whitespace-pre-line space-y-2">
-                        {msg.text.split("\n\n").map((para, pIdx) => {
-                          if (para.startsWith("* ") || para.startsWith("- ")) {
-                            return (
-                              <ul key={pIdx} className="list-disc pl-5 space-y-1">
-                                {para.split("\n").map((li, lIdx) => (
-                                  <li key={lIdx}>{li.replace(/^[\*\-]\s+/, "")}</li>
-                                ))}
-                              </ul>
-                            );
-                          }
-                          if (para.startsWith("### ")) {
-                            return <h4 key={pIdx} className="text-sm font-bold text-teal-400 mt-3 mb-1">{para.replace("### ", "")}</h4>;
-                          }
-                          if (para.startsWith("## ")) {
-                            return <h3 key={pIdx} className="text-base font-bold text-teal-300 mt-4 mb-2">{para.replace("## ", "")}</h3>;
-                          }
-                          return <p key={pIdx}>{para}</p>;
-                        })}
-                      </div>
+                      {isAi ? (
+                        <MarkdownRenderer text={msg.text} />
+                      ) : (
+                        <p className="text-sm leading-relaxed">{msg.text}</p>
+                      )}
                     </div>
-                    
-                    <p className={`text-[9px] text-slate-500 px-1 ${isAi ? "text-left" : "text-right"}`}>
-                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
+
+                    <span className={`text-[9px] text-slate-600 px-1 ${isAi ? "text-left" : "text-right"}`}>
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
                   </div>
                 </div>
               );
             })}
 
+            {/* Typing indicator */}
             {generating && (
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shrink-0">
-                  <Bot className="w-4 h-4 text-teal-400 animate-pulse" />
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-900 rounded-tl-none flex items-center gap-1.5 py-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce delay-100"></span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce delay-200"></span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce delay-300"></span>
+              <div className="flex items-start gap-3">
+                <MayaAvatar size={32} pulse />
+                <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-slate-900/70 border border-slate-800/70 flex items-center gap-1.5">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-teal-400 animate-bounce"
+                      style={{ animationDelay: `${i * 0.15}s` }}
+                    />
+                  ))}
+                  <span className="text-xs text-slate-500 ml-1">Maya is thinking…</span>
                 </div>
               </div>
             )}
 
+            {/* Error */}
             {errorState && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs text-center max-w-md mx-auto">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs max-w-lg mx-auto">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
                 {errorState}
               </div>
             )}
@@ -324,102 +711,134 @@ export default function ChatPage() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Voice Waveform Overlay simulator */}
+          {/* Quick suggestions (shown when recent messages are few) */}
+          {messages.length <= 1 && !generating && (
+            <div className="px-5 pb-2 flex gap-2 overflow-x-auto scrollbar-none">
+              {suggestions.map((s, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setInput(s)}
+                  className="shrink-0 text-[10px] font-medium px-3 py-1.5 rounded-full border border-slate-700/60 bg-slate-800/30 text-slate-400 hover:text-teal-300 hover:border-teal-500/40 hover:bg-teal-500/5 transition-all duration-150 whitespace-nowrap"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Voice overlay */}
           {isRecording && (
-            <div className="absolute inset-x-0 bottom-24 flex flex-col items-center justify-center gap-3 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-900 z-10 py-8">
+            <div className="absolute inset-x-0 bottom-20 flex flex-col items-center justify-center gap-3 px-4 py-6 bg-slate-950/95 backdrop-blur-md border-t border-slate-900 z-10">
               <span className="text-xs font-bold text-teal-400 tracking-wider animate-pulse flex items-center gap-1.5">
-                <Activity className="w-4 h-4 animate-spin" />
-                Listening to doctor and patient speech...
+                <Activity className="w-4 h-4" />
+                Listening to your query…
               </span>
-              <div className="flex items-end justify-center gap-1.5 h-12">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1].map((h, i) => (
-                  <span 
-                    key={i} 
-                    className="w-1 bg-gradient-to-t from-teal-500 to-blue-500 rounded-full animate-pulse-slow"
-                    style={{ 
-                      height: `${h * 6}px`, 
-                      animationDelay: `${i * 0.1}s`,
-                      animationDuration: "0.8s"
-                    }}
-                  ></span>
-                ))}
+              <div className="flex items-end justify-center gap-1 h-10">
+                {Array.from({ length: 15 }, (_, i) => {
+                  const h = [2, 3, 5, 7, 9, 8, 6, 10, 8, 6, 9, 7, 5, 3, 2][i];
+                  return (
+                    <span
+                      key={i}
+                      className="w-1 bg-gradient-to-t from-teal-500 to-cyan-400 rounded-full animate-pulse"
+                      style={{
+                        height: `${h * 5}px`,
+                        animationDelay: `${i * 0.07}s`,
+                        animationDuration: "0.6s",
+                      }}
+                    />
+                  );
+                })}
               </div>
-              <button 
+              <button
                 onClick={triggerVoiceInput}
-                className="mt-2 text-xs font-bold text-slate-400 hover:text-slate-200 border border-slate-800 rounded-xl px-4 py-1.5 bg-slate-900"
+                className="text-xs font-bold text-slate-400 hover:text-slate-200 border border-slate-700 rounded-xl px-4 py-1.5 bg-slate-900 hover:bg-slate-800 transition-colors"
               >
-                Press to Stop & Transcribe
+                Stop & Use Text
               </button>
             </div>
           )}
 
-          {/* Prompt Form */}
-          <form 
+          {/* Input form */}
+          <form
             onSubmit={handleSend}
-            className="p-4 bg-slate-950 border-t border-slate-900"
+            className="p-4 bg-slate-950/80 border-t border-slate-800/60 shrink-0"
           >
             {imagePreview && (
-              <div className="flex items-center gap-2 mb-3 bg-slate-900 border border-slate-850 p-2.5 rounded-xl max-w-xs relative">
-                <img src={imagePreview} alt="Selected" className="w-12 h-12 rounded-lg object-cover border border-slate-800" />
+              <div className="flex items-center gap-2.5 mb-3 bg-slate-900 border border-slate-800 p-2.5 rounded-xl max-w-xs relative">
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="w-10 h-10 rounded-lg object-cover border border-slate-700"
+                />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-slate-300 truncate">{imageFile?.name}</p>
-                  <p className="text-[10px] text-slate-500">Ready to upload</p>
+                  <p className="text-xs font-semibold text-slate-300 truncate">{imageFile?.name}</p>
+                  <p className="text-[10px] text-slate-500">Ready to send</p>
                 </div>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={clearImage}
-                  className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg"
+                  className="p-1 text-slate-500 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
                 >
-                  Clear
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
 
-            <div className="flex items-center gap-3">
-              <input 
-                type="file" 
-                ref={fileInputRef} 
+            <div className="flex items-center gap-2.5">
+              <input
+                type="file"
+                ref={fileInputRef}
                 onChange={handleImageChange}
                 accept="image/*"
-                className="hidden" 
+                className="hidden"
               />
+
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="p-3 text-slate-400 hover:text-teal-400 hover:bg-slate-900 rounded-xl border border-slate-900 bg-slate-900/40 transition-colors"
-                title="Add prescription or clinical scan"
+                className="p-2.5 text-slate-500 hover:text-teal-400 hover:bg-slate-800 rounded-xl border border-slate-800 bg-slate-900/50 transition-colors"
+                title="Attach prescription or scan image"
               >
-                <ImageIcon className="w-5 h-5" />
+                <ImageIcon className="w-4.5 h-4.5" />
               </button>
 
               <button
                 type="button"
                 onClick={triggerVoiceInput}
-                className={`p-3 rounded-xl border border-slate-900 bg-slate-900/40 transition-colors ${
-                  isRecording ? "text-rose-400 hover:text-rose-300" : "text-slate-400 hover:text-teal-400"
+                className={`p-2.5 rounded-xl border border-slate-800 bg-slate-900/50 transition-colors ${
+                  isRecording
+                    ? "text-rose-400 border-rose-500/30 bg-rose-500/10 animate-pulse"
+                    : "text-slate-500 hover:text-teal-400 hover:bg-slate-800"
                 }`}
-                title="Dictate prescription query"
+                title="Voice input"
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="w-4.5 h-4.5" />
               </button>
 
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about side effects, dosage, drug conflicts, or report values..."
-                className="flex-1 bg-slate-950 border border-slate-900 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
+                placeholder="Ask Maya about medicines, reports, symptoms, dosage…"
+                className="flex-1 bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
                 disabled={generating}
+                autoComplete="off"
               />
 
               <button
                 type="submit"
                 disabled={(!input.trim() && !imageFile) || generating}
-                className="p-3 text-slate-950 bg-gradient-to-tr from-teal-400 to-blue-500 hover:from-teal-300 hover:to-blue-400 rounded-xl disabled:opacity-50 disabled:hover:from-teal-400 disabled:hover:to-blue-500 transition-all shadow-md"
+                className="p-2.5 bg-gradient-to-br from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 text-slate-950 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md shadow-teal-500/20 font-bold"
+                title="Send message"
               >
-                <Send className="w-5 h-5" />
+                <Send className="w-4.5 h-4.5" />
               </button>
             </div>
+
+            <p className="text-[9px] text-slate-600 text-center mt-2">
+              Maya provides health guidance for educational purposes only. Always consult your doctor for personal medical advice.
+            </p>
           </form>
         </div>
       </div>

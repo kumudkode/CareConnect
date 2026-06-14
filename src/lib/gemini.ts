@@ -117,25 +117,34 @@ What questions can I answer for you today?
   ): Promise<any> => {
     if (!isGeminiConfigured) {
       await new Promise((resolve) => setTimeout(resolve, 2500));
-      // Return simulated prescription JSON
+      // Return simulated prescription JSON matching the provided Amit Sharma Rx
       return [
         {
-          name: "Amoxicillin",
-          genericName: "Amoxicillin Trihydrate",
-          dosage: "500 mg",
-          frequency: "3 times daily",
-          duration: "7 days",
-          instructions: "Take with food to avoid stomach upset. Complete full course.",
+          name: "Aspirin",
+          genericName: "Aspirin",
+          dosage: "650 mg",
+          frequency: "Immediately (stat), repeat after 4 hours if needed",
+          duration: "As needed",
+          instructions: "Take tablet immediately. Dispense 4 tablets.",
+          confidence: 0.98
+        },
+        {
+          name: "Ergotamine + Caffeine",
+          genericName: "Ergotamine Tartrate & Caffeine",
+          dosage: "1 mg + 100 mg",
+          frequency: "2 tablets immediately, then 1 tablet half hourly if nausea/vomiting (max 6/day)",
+          duration: "As needed",
+          instructions: "Take 2 tablets immediately, then 1 tablet half hourly. Max 6 in a day if nausea/vomiting. Dispense 6 tablets.",
           confidence: 0.96
         },
         {
-          name: "Ibuprofen",
-          genericName: "Ibuprofen",
-          dosage: "400 mg",
-          frequency: "Every 6 hours as needed",
-          duration: "5 days",
-          instructions: "Take after meals for pain/swelling.",
-          confidence: 0.94
+          name: "Metoclopramide",
+          genericName: "Metoclopramide Hydrochloride",
+          dosage: "10 mg",
+          frequency: "Immediately (stat) and when required (SOS)",
+          duration: "As needed",
+          instructions: "Take immediately and then whenever required. Dispense 6 tablets.",
+          confidence: 0.97
         }
       ];
     }

@@ -67,7 +67,7 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Security Warning banner */}
-        <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-slate-350 text-xs flex items-center gap-3">
+        <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-slate-300 text-xs flex items-center gap-3">
           <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0" />
           <span>
             <strong>Clinical Privilege Warning:</strong> You are accessing clinical system diagnostic layers. Actions executed here impact user database partitions.
@@ -131,7 +131,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Clinical User Signups mock list */}
+          {/* Clinical User Signups list */}
           <div className="p-6 rounded-2xl border border-slate-900 bg-slate-900/20 backdrop-blur-sm">
             <h3 className="font-heading text-sm font-bold text-slate-200 flex items-center gap-2 mb-6">
               <Users className="w-4.5 h-4.5 text-blue-400" />

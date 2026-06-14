@@ -1,0 +1,990 @@
+[
+  {
+    "id": "PAT-001",
+    "name": "Aarav Sharma",
+    "age": 45,
+    "gender": "Male",
+    "symptoms": "Chronic fatigue, increased thirst, frequent urination",
+    "diagnosis": "Type 2 Diabetes mellitus",
+    "prescription": {
+      "doctor": "Dr. S. Roy (Endocrinologist)",
+      "text": "Rx:\n1. Tab. Metformin 500mg - 1 tab twice daily after meals (Breakfast/Dinner) for 3 months.\n2. Tab. Glimepiride 1mg - 1 tab once daily before breakfast for 3 months.",
+      "expected_medicines": [
+        {
+          "name": "Metformin",
+          "genericName": "Metformin Hydrochloride",
+          "dosage": "500mg",
+          "frequency": "Twice daily",
+          "duration": "3 months",
+          "instructions": "after meals"
+        },
+        {
+          "name": "Glimepiride",
+          "genericName": "Glimepiride",
+          "dosage": "1mg",
+          "frequency": "Once daily",
+          "duration": "3 months",
+          "instructions": "before breakfast"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Fasting blood sugar & HbA1c",
+      "text": "Fasting Blood Glucose: 138 mg/dL (Reference: 70-100 mg/dL)\nHbA1c: 7.2% (Reference: < 5.7%)\nBlood Pressure: 130/80 mmHg"
+    }
+  },
+  {
+    "id": "PAT-002",
+    "name": "Priyah Patel",
+    "age": 28,
+    "gender": "Female",
+    "symptoms": "Burning sensation during urination, fever",
+    "diagnosis": "Acute Urinary Tract Infection",
+    "prescription": {
+      "doctor": "Dr. Anjali Mehta (GP)",
+      "text": "Rx:\n1. Cap. Amoxicillin 500mg - 1 cap three times daily for 5 days.\n2. Tab. Phenazopyridine 200mg - 1 tab three times daily after meals for 2 days.",
+      "expected_medicines": [
+        {
+          "name": "Amoxicillin",
+          "genericName": "Amoxicillin Trihydrate",
+          "dosage": "500mg",
+          "frequency": "Three times daily",
+          "duration": "5 days",
+          "instructions": "take complete course"
+        },
+        {
+          "name": "Phenazopyridine",
+          "genericName": "Phenazopyridine Hydrochloride",
+          "dosage": "200mg",
+          "frequency": "Three times daily",
+          "duration": "2 days",
+          "instructions": "after meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Urinalysis",
+      "text": "WBC in Urine: 15-20 /hpf (Reference: < 5 /hpf)\nLeukocyte Esterase: Positive (Reference: Negative)\nNitrite: Positive (Reference: Negative)"
+    }
+  },
+  {
+    "id": "PAT-003",
+    "name": "Rajesh Kumar",
+    "age": 62,
+    "gender": "Male",
+    "symptoms": "Severe headache, occasional chest tightness",
+    "diagnosis": "Essential Hypertension",
+    "prescription": {
+      "doctor": "Dr. K. Prasad (Cardiologist)",
+      "text": "Rx:\n1. Tab. Amlodipine 5mg - 1 tab once daily in morning for 1 month.\n2. Tab. Telmisartan 40mg - 1 tab once daily at bedtime for 1 month.",
+      "expected_medicines": [
+        {
+          "name": "Amlodipine",
+          "genericName": "Amlodipine Besylate",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "1 month",
+          "instructions": "in morning"
+        },
+        {
+          "name": "Telmisartan",
+          "genericName": "Telmisartan",
+          "dosage": "40mg",
+          "frequency": "Once daily",
+          "duration": "1 month",
+          "instructions": "at bedtime"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Cardiovascular Workup",
+      "text": "Blood Pressure: 158/96 mmHg (Reference: < 120/80 mmHg)\nSerum Potassium: 4.1 mEq/L (Reference: 3.5-5.0 mEq/L)"
+    }
+  },
+  {
+    "id": "PAT-004",
+    "name": "Sunita Devi",
+    "age": 55,
+    "gender": "Female",
+    "symptoms": "Heartburn, acid reflux, epigastric pain",
+    "diagnosis": "Gastroesophageal Reflux Disease (GERD)",
+    "prescription": {
+      "doctor": "Dr. R. Verma (Gastroenterologist)",
+      "text": "Rx:\n1. Cap. Pantoprazole 40mg - 1 cap once daily 30 minutes before breakfast for 14 days.\n2. Tab. Domperidone 10mg - 1 tab three times daily before meals for 14 days.",
+      "expected_medicines": [
+        {
+          "name": "Pantoprazole",
+          "genericName": "Pantoprazole Sodium",
+          "dosage": "40mg",
+          "frequency": "Once daily",
+          "duration": "14 days",
+          "instructions": "30 mins before breakfast"
+        },
+        {
+          "name": "Domperidone",
+          "genericName": "Domperidone",
+          "dosage": "10mg",
+          "frequency": "Three times daily",
+          "duration": "14 days",
+          "instructions": "before meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Endoscopy Summary",
+      "text": "Esophageal mucosa: Mild erythema at lower third. No ulcerations or Barrett's esophagus noted."
+    }
+  },
+  {
+    "id": "PAT-005",
+    "name": "Vikram Singh",
+    "age": 34,
+    "gender": "Male",
+    "symptoms": "Wheezing, shortness of breath, nighttime cough",
+    "diagnosis": "Mild Persistent Asthma",
+    "prescription": {
+      "doctor": "Dr. S. Chawla (Pulmonologist)",
+      "text": "Rx:\n1. Albuterol HFA Inhaler 90mcg - 2 puffs every 4-6 hours as needed for wheezing.\n2. Fluticasone Propionate Inhaler 110mcg - 1 puff twice daily.",
+      "expected_medicines": [
+        {
+          "name": "Albuterol Inhaler",
+          "genericName": "Albuterol Sulfate",
+          "dosage": "90mcg",
+          "frequency": "as needed",
+          "duration": "As needed",
+          "instructions": "for wheezing"
+        },
+        {
+          "name": "Fluticasone Inhaler",
+          "genericName": "Fluticasone Propionate",
+          "dosage": "110mcg",
+          "frequency": "Twice daily",
+          "duration": "Ongoing",
+          "instructions": "rinse mouth after use"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Pulmonary Function Test",
+      "text": "FEV1: 78% predicted (Reference: > 80%)\nFEV1/FVC Ratio: 68% (Reference: > 70%)"
+    }
+  },
+  {
+    "id": "PAT-006",
+    "name": "Meera Nair",
+    "age": 41,
+    "gender": "Female",
+    "symptoms": "Severe fatigue, cold intolerance, dry skin, weight gain",
+    "diagnosis": "Primary Hypothyroidism",
+    "prescription": {
+      "doctor": "Dr. Amit Sen (Endocrinologist)",
+      "text": "Rx:\n1. Tab. Levothyroxine 75mcg - 1 tab once daily in morning on empty stomach 1 hour before tea/breakfast for 6 months.",
+      "expected_medicines": [
+        {
+          "name": "Levothyroxine",
+          "genericName": "Levothyroxine Sodium",
+          "dosage": "75mcg",
+          "frequency": "Once daily",
+          "duration": "6 months",
+          "instructions": "empty stomach 1 hour before breakfast"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Thyroid Profile",
+      "text": "TSH: 8.4 mIU/L (Reference: 0.4-4.5 mIU/L)\nFree T4: 0.7 ng/dL (Reference: 0.8-1.8 ng/dL)"
+    }
+  },
+  {
+    "id": "PAT-007",
+    "name": "Ananya Iyer",
+    "age": 22,
+    "gender": "Female",
+    "symptoms": "Extreme pallor, brittle nails, severe lethargy",
+    "diagnosis": "Iron Deficiency Anemia",
+    "prescription": {
+      "doctor": "Dr. Anjali Mehta (GP)",
+      "text": "Rx:\n1. Tab. Ferrous Sulfate 325mg - 1 tab once daily with orange juice/water (avoid calcium/milk) for 3 months.\n2. Tab. Folic Acid 5mg - 1 tab once daily for 3 months.",
+      "expected_medicines": [
+        {
+          "name": "Ferrous Sulfate",
+          "genericName": "Ferrous Sulfate",
+          "dosage": "325mg",
+          "frequency": "Once daily",
+          "duration": "3 months",
+          "instructions": "avoid calcium/milk"
+        },
+        {
+          "name": "Folic Acid",
+          "genericName": "Folic Acid",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "3 months",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Complete Blood Count",
+      "text": "Hemoglobin: 8.6 g/dL (Reference: 12.0-15.5 g/dL)\nSerum Ferritin: 9 ng/mL (Reference: 10-150 ng/mL)\nMCV: 71 fL (Reference: 80-100 fL)"
+    }
+  },
+  {
+    "id": "PAT-008",
+    "name": "Rohan Kapoor",
+    "age": 31,
+    "gender": "Male",
+    "symptoms": "Throbbing unilateral headache, nausea, photophobia",
+    "diagnosis": "Acute Migraine",
+    "prescription": {
+      "doctor": "Dr. P. Gupta (Neurologist)",
+      "text": "Rx:\n1. Tab. Sumatriptan 50mg - 1 tab at onset of migraine. Can repeat once after 2 hours if headache persists (Max 100mg/day).\n2. Tab. Naproxen 500mg - 1 tab twice daily as needed for pain.",
+      "expected_medicines": [
+        {
+          "name": "Sumatriptan",
+          "genericName": "Sumatriptan Succinate",
+          "dosage": "50mg",
+          "frequency": "at onset, can repeat once after 2h",
+          "duration": "As needed",
+          "instructions": "max 100mg/day"
+        },
+        {
+          "name": "Naproxen",
+          "genericName": "Naproxen",
+          "dosage": "500mg",
+          "frequency": "Twice daily as needed",
+          "duration": "As needed",
+          "instructions": "after meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Neurological Assessment",
+      "text": "Vitals: BP 118/76 mmHg. MRI Brain: Within normal limits. Diagnostic criteria for Migraine without aura met."
+    }
+  },
+  {
+    "id": "PAT-009",
+    "name": "Baldev Singh",
+    "age": 70,
+    "gender": "Male",
+    "symptoms": "Bilateral knee joint pain, stiffness in the morning",
+    "diagnosis": "Osteoarthritis of both knees",
+    "prescription": {
+      "doctor": "Dr. H. Gill (Orthopedic)",
+      "text": "Rx:\n1. Tab. Acetaminophen 650mg ER - 1 tab twice daily (every 12 hours) for 1 month.\n2. Tab. Glucosamine Sulfate 1500mg - 1 tab once daily with meals for 2 months.",
+      "expected_medicines": [
+        {
+          "name": "Acetaminophen ER",
+          "genericName": "Acetaminophen",
+          "dosage": "650mg",
+          "frequency": "Twice daily",
+          "duration": "1 month",
+          "instructions": "every 12 hours"
+        },
+        {
+          "name": "Glucosamine Sulfate",
+          "genericName": "Glucosamine Sulfate",
+          "dosage": "1500mg",
+          "frequency": "Once daily",
+          "duration": "2 months",
+          "instructions": "with meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Knee X-ray",
+      "text": "Bilateral Knee X-ray: Narrowing of joint spaces, subchondral sclerosis, osteophyte formation."
+    }
+  },
+  {
+    "id": "PAT-010",
+    "name": "Kavita Reddy",
+    "age": 37,
+    "gender": "Female",
+    "symptoms": "Anxiety, palpitations, heat intolerance, weight loss",
+    "diagnosis": "Hyperthyroidism (Graves' Disease)",
+    "prescription": {
+      "doctor": "Dr. Amit Sen (Endocrinologist)",
+      "text": "Rx:\n1. Tab. Methimazole 10mg - 1 tab once daily in morning for 3 months.\n2. Tab. Propranolol 20mg - 1 tab twice daily for 2 weeks to control heart rate.",
+      "expected_medicines": [
+        {
+          "name": "Methimazole",
+          "genericName": "Methimazole",
+          "dosage": "10mg",
+          "frequency": "Once daily",
+          "duration": "3 months",
+          "instructions": ""
+        },
+        {
+          "name": "Propranolol",
+          "genericName": "Propranolol Hydrochloride",
+          "dosage": "20mg",
+          "frequency": "Twice daily",
+          "duration": "2 weeks",
+          "instructions": "for heart rate control"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Thyroid Function Test",
+      "text": "TSH: 0.05 mIU/L (Reference: 0.4-4.5 mIU/L)\nFree T4: 3.1 ng/dL (Reference: 0.8-1.8 ng/dL)\nHeart Rate: 104 bpm"
+    }
+  },
+  {
+    "id": "PAT-011",
+    "name": "Devendra Joshi",
+    "age": 52,
+    "gender": "Male",
+    "symptoms": "High blood pressure, history of gout",
+    "diagnosis": "Hypertension & Hyperuricemia",
+    "prescription": {
+      "doctor": "Dr. S. Roy (Internist)",
+      "text": "Rx:\n1. Tab. Losartan 50mg - 1 tab once daily in morning.\n2. Tab. Allopurinol 100mg - 1 tab once daily after meals.",
+      "expected_medicines": [
+        {
+          "name": "Losartan",
+          "genericName": "Losartan Potassium",
+          "dosage": "50mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "in morning"
+        },
+        {
+          "name": "Allopurinol",
+          "genericName": "Allopurinol",
+          "dosage": "100mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "after meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Metabolic Panel",
+      "text": "Serum Uric Acid: 8.8 mg/dL (Reference: 3.5-7.2 mg/dL)\nBlood Pressure: 146/92 mmHg"
+    }
+  },
+  {
+    "id": "PAT-012",
+    "name": "Simran Kaur",
+    "age": 26,
+    "gender": "Female",
+    "symptoms": "Itching, nasal congestion, sneezing, watery eyes",
+    "diagnosis": "Seasonal Allergic Rhinitis",
+    "prescription": {
+      "doctor": "Dr. R. Bhatia (ENT)",
+      "text": "Rx:\n1. Tab. Cetirizine 10mg - 1 tab once daily at bedtime for 10 days.\n2. Fluticasone Furoate Nasal Spray - 2 sprays in each nostril once daily for 14 days.",
+      "expected_medicines": [
+        {
+          "name": "Cetirizine",
+          "genericName": "Cetirizine Hydrochloride",
+          "dosage": "10mg",
+          "frequency": "Once daily",
+          "duration": "10 days",
+          "instructions": "at bedtime"
+        },
+        {
+          "name": "Fluticasone Nasal Spray",
+          "genericName": "Fluticasone Furoate",
+          "dosage": "27.5 mcg per spray",
+          "frequency": "Once daily",
+          "duration": "14 days",
+          "instructions": "2 sprays each nostril"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Allergy Skin Prick Test",
+      "text": "Dust Mites: Positive (4mm wheal)\nGrass Pollen: Positive (5mm wheal)"
+    }
+  },
+  {
+    "id": "PAT-013",
+    "name": "Harish Patel",
+    "age": 59,
+    "gender": "Male",
+    "symptoms": "Chest pain on exertion, shortness of breath",
+    "diagnosis": "Stable Angina Pectoris",
+    "prescription": {
+      "doctor": "Dr. K. Prasad (Cardiologist)",
+      "text": "Rx:\n1. Tab. Nitroglycerin 0.4mg - 1 tab sublingually as needed for chest pain.\n2. Tab. Metoprolol Succinate 50mg ER - 1 tab once daily.",
+      "expected_medicines": [
+        {
+          "name": "Nitroglycerin",
+          "genericName": "Nitroglycerin",
+          "dosage": "0.4mg",
+          "frequency": "as needed",
+          "duration": "Ongoing",
+          "instructions": "sublingually for chest pain"
+        },
+        {
+          "name": "Metoprolol Succinate ER",
+          "genericName": "Metoprolol Succinate",
+          "dosage": "50mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Cardiac Stress Test",
+      "text": "ST-Segment depression: 1.5mm in leads V4-V6 during Stage II of Bruce protocol. Heart rate peak: 135 bpm."
+    }
+  },
+  {
+    "id": "PAT-014",
+    "name": "Shalini Sharma",
+    "age": 47,
+    "gender": "Female",
+    "symptoms": "Dry throat, severe cough, low-grade fever",
+    "diagnosis": "Acute Bronchitis",
+    "prescription": {
+      "doctor": "Dr. S. Chawla (Pulmonologist)",
+      "text": "Rx:\n1. Syr. Dextromethorphan HBr 15mg/5mL - 10mL three times daily as needed for dry cough.\n2. Tab. Benzonatate 100mg - 1 capsule three times daily for cough for 5 days.",
+      "expected_medicines": [
+        {
+          "name": "Dextromethorphan Syrup",
+          "genericName": "Dextromethorphan Hydrobromide",
+          "dosage": "15mg/5mL",
+          "frequency": "Three times daily as needed",
+          "duration": "As needed",
+          "instructions": "take 10mL"
+        },
+        {
+          "name": "Benzonatate",
+          "genericName": "Benzonatate",
+          "dosage": "100mg",
+          "frequency": "Three times daily",
+          "duration": "5 days",
+          "instructions": "do not chew"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Chest X-ray",
+      "text": "Chest X-ray: Lungs are clear. No active infiltrates, consolidation or pleural effusion."
+    }
+  },
+  {
+    "id": "PAT-015",
+    "name": "Arjun Malhotra",
+    "age": 19,
+    "gender": "Male",
+    "symptoms": "Severe sore throat, difficulty swallowing, swollen tonsils",
+    "diagnosis": "Streptococcal Pharyngitis",
+    "prescription": {
+      "doctor": "Dr. Anjali Mehta (GP)",
+      "text": "Rx:\n1. Tab. Penicillin V Potassium 500mg - 1 tab twice daily for 10 days.\n2. Tab. Ibuprofen 400mg - 1 tab every 6 hours as needed for severe pain/swallowing difficulty.",
+      "expected_medicines": [
+        {
+          "name": "Penicillin V Potassium",
+          "genericName": "Penicillin V Potassium",
+          "dosage": "500mg",
+          "frequency": "Twice daily",
+          "duration": "10 days",
+          "instructions": "complete full course"
+        },
+        {
+          "name": "Ibuprofen",
+          "genericName": "Ibuprofen",
+          "dosage": "400mg",
+          "frequency": "Every 6 hours as needed",
+          "duration": "As needed",
+          "instructions": "after food"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Rapid Strep Test",
+      "text": "Throat Swab Rapid Antigen: Positive for Group A Streptococcus."
+    }
+  },
+  {
+    "id": "PAT-016",
+    "name": "Leela Krishnan",
+    "age": 68,
+    "gender": "Female",
+    "symptoms": "Lower back pain, height loss, history of wrist fracture",
+    "diagnosis": "Postmenopausal Osteoporosis",
+    "prescription": {
+      "doctor": "Dr. H. Gill (Orthopedic)",
+      "text": "Rx:\n1. Tab. Alendronate 70mg - 1 tab once weekly in morning with full glass of water 30 mins before food (must stay upright).\n2. Tab. Calcium Carbonate 500mg + Vitamin D3 400 IU - 1 tab twice daily with meals.",
+      "expected_medicines": [
+        {
+          "name": "Alendronate",
+          "genericName": "Alendronate Sodium",
+          "dosage": "70mg",
+          "frequency": "Once weekly",
+          "duration": "Ongoing",
+          "instructions": "morning with full glass of water, stay upright for 30 mins before food"
+        },
+        {
+          "name": "Calcium + Vit D3",
+          "genericName": "Calcium Carbonate + Cholecalciferol",
+          "dosage": "500mg + 400 IU",
+          "frequency": "Twice daily",
+          "duration": "Ongoing",
+          "instructions": "with meals"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Bone DEXA Scan",
+      "text": "Lumbar Spine T-score: -2.8 SD (Reference: > -1.0 SD)\nFemoral Neck T-score: -2.6 SD"
+    }
+  },
+  {
+    "id": "PAT-017",
+    "name": "Suresh Singhal",
+    "age": 44,
+    "gender": "Male",
+    "symptoms": "High cholesterol, strong family history of CAD",
+    "diagnosis": "Hyperlipidemia",
+    "prescription": {
+      "doctor": "Dr. K. Prasad (Cardiologist)",
+      "text": "Rx:\n1. Tab. Atorvastatin 20mg - 1 tab once daily at bedtime.",
+      "expected_medicines": [
+        {
+          "name": "Atorvastatin",
+          "genericName": "Atorvastatin Calcium",
+          "dosage": "20mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "at bedtime"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Lipid Profile",
+      "text": "Total Cholesterol: 245 mg/dL (Reference: < 200 mg/dL)\nLDL Cholesterol: 162 mg/dL (Reference: < 100 mg/dL)\nHDL Cholesterol: 38 mg/dL (Reference: > 40 mg/dL)\nTriglycerides: 180 mg/dL (Reference: < 150 mg/dL)"
+    }
+  },
+  {
+    "id": "PAT-018",
+    "name": "Neha Gupta",
+    "age": 30,
+    "gender": "Female",
+    "symptoms": "Severe scaling, plaques on elbows, itchiness",
+    "diagnosis": "Plaque Psoriasis",
+    "prescription": {
+      "doctor": "Dr. M. Roy (Dermatologist)",
+      "text": "Rx:\n1. Clobetasol Propionate Ointment 0.05% - Apply sparingly to affected areas twice daily for 2 weeks.\n2. Coal Tar Solution 5% - Add 2 capfuls to warm bath daily.",
+      "expected_medicines": [
+        {
+          "name": "Clobetasol Ointment",
+          "genericName": "Clobetasol Propionate",
+          "dosage": "0.05%",
+          "frequency": "Apply twice daily",
+          "duration": "2 weeks",
+          "instructions": "apply sparingly to affected areas"
+        },
+        {
+          "name": "Coal Tar Solution",
+          "genericName": "Coal Tar",
+          "dosage": "5%",
+          "frequency": "Daily",
+          "duration": "Ongoing",
+          "instructions": "add 2 capfuls to warm bath"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Dermatopathology Report",
+      "text": "Skin Biopsy: Acanthosis with elongation of rete ridges, parakeratosis, microabscesses of Munro. Consistent with psoriasis."
+    }
+  },
+  {
+    "id": "PAT-019",
+    "name": "Tarun Verma",
+    "age": 50,
+    "gender": "Male",
+    "symptoms": "Chronic morning cough, phlegm, history of smoking 20 years",
+    "diagnosis": "Chronic Obstructive Pulmonary Disease (COPD)",
+    "prescription": {
+      "doctor": "Dr. S. Chawla (Pulmonologist)",
+      "text": "Rx:\n1. Tiotropium Bromide Inhaler 18mcg - Inhale contents of 1 capsule once daily using HandiHaler.\n2. Budesonide/Formoterol 160/4.5 mcg - 2 puffs twice daily.",
+      "expected_medicines": [
+        {
+          "name": "Tiotropium Inhaler",
+          "genericName": "Tiotropium Bromide",
+          "dosage": "18mcg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "inhale capsule using HandiHaler"
+        },
+        {
+          "name": "Budesonide/Formoterol",
+          "genericName": "Budesonide + Formoterol Fumarate Dihydrate",
+          "dosage": "160/4.5 mcg",
+          "frequency": "Twice daily",
+          "duration": "Ongoing",
+          "instructions": "2 puffs"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Spirometry",
+      "text": "Post-Bronchodilator FEV1/FVC: 62% (Reference: > 70% indicating airway obstruction)\nFEV1: 58% predicted (Moderate COPD)"
+    }
+  },
+  {
+    "id": "PAT-020",
+    "name": "Lata Mangesh",
+    "age": 75,
+    "gender": "Female",
+    "symptoms": "Forgetfulness, losing items, confusion with dates",
+    "diagnosis": "Mild Cognitive Impairment / Early Alzheimer's",
+    "prescription": {
+      "doctor": "Dr. P. Gupta (Neurologist)",
+      "text": "Rx:\n1. Tab. Donepezil 5mg - 1 tab once daily at bedtime for 1 month.\n2. Tab. Memantine 5mg - 1 tab once daily in morning for 1 month.",
+      "expected_medicines": [
+        {
+          "name": "Donepezil",
+          "genericName": "Donepezil Hydrochloride",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "1 month",
+          "instructions": "at bedtime"
+        },
+        {
+          "name": "Memantine",
+          "genericName": "Memantine Hydrochloride",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "1 month",
+          "instructions": "in morning"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "MMSE Cognitive Exam",
+      "text": "Mini-Mental State Examination Score: 22/30 (Indicating mild cognitive impairment). Vitamin B12: 320 pg/mL (normal)."
+    }
+  },
+  {
+    "id": "PAT-021",
+    "name": "Kunal Sen",
+    "age": 27,
+    "gender": "Male",
+    "symptoms": "Severe anxiety, panic attacks before presentations",
+    "diagnosis": "Generalized Anxiety Disorder",
+    "prescription": {
+      "doctor": "Dr. S. Bannerjee (Psychiatrist)",
+      "text": "Rx:\n1. Tab. Escitalopram 10mg - 1 tab once daily in morning.\n2. Tab. Alprazolam 0.25mg - 1 tab twice daily as needed for panic attacks.",
+      "expected_medicines": [
+        {
+          "name": "Escitalopram",
+          "genericName": "Escitalopram Oxalate",
+          "dosage": "10mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "in morning"
+        },
+        {
+          "name": "Alprazolam",
+          "genericName": "Alprazolam",
+          "dosage": "0.25mg",
+          "frequency": "Twice daily as needed",
+          "duration": "As needed",
+          "instructions": "for panic attacks"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Psychiatric Evaluation",
+      "text": "GAD-7 Score: 14 (Moderate Anxiety). Physiological parameters normal."
+    }
+  },
+  {
+    "id": "PAT-022",
+    "name": "Ritu Verma",
+    "age": 36,
+    "gender": "Female",
+    "symptoms": "Severe fatigue, joint pain, hair loss, butterfly rash",
+    "diagnosis": "Systemic Lupus Erythematosus (SLE)",
+    "prescription": {
+      "doctor": "Dr. J. Mathew (Rheumatologist)",
+      "text": "Rx:\n1. Tab. Hydroxychloroquine 200mg - 1 tab twice daily with meals.\n2. Tab. Prednisone 10mg - 1 tab once daily in morning for 1 month.",
+      "expected_medicines": [
+        {
+          "name": "Hydroxychloroquine",
+          "genericName": "Hydroxychloroquine Sulfate",
+          "dosage": "200mg",
+          "frequency": "Twice daily",
+          "duration": "Ongoing",
+          "instructions": "with meals"
+        },
+        {
+          "name": "Prednisone",
+          "genericName": "Prednisone",
+          "dosage": "10mg",
+          "frequency": "Once daily",
+          "duration": "1 month",
+          "instructions": "in morning"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Autoimmune Panel",
+      "text": "Antinuclear Antibodies (ANA): Positive (Titer 1:320, homogeneous pattern)\nAnti-dsDNA: Elevated (45 IU/mL, Reference: < 30 IU/mL)"
+    }
+  },
+  {
+    "id": "PAT-023",
+    "name": "Narendra Modi",
+    "age": 73,
+    "gender": "Male",
+    "symptoms": "Urinary frequency, weak stream, nocturia",
+    "diagnosis": "Benign Prostatic Hyperplasia (BPH)",
+    "prescription": {
+      "doctor": "Dr. V. Rao (Urologist)",
+      "text": "Rx:\n1. Tab. Tamsulosin 0.4mg - 1 tab once daily after dinner.\n2. Tab. Finasteride 5mg - 1 tab once daily.",
+      "expected_medicines": [
+        {
+          "name": "Tamsulosin",
+          "genericName": "Tamsulosin Hydrochloride",
+          "dosage": "0.4mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "after dinner"
+        },
+        {
+          "name": "Finasteride",
+          "genericName": "Finasteride",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Urological Profile",
+      "text": "PSA (Prostate Specific Antigen): 2.4 ng/mL (Reference: < 4.0 ng/mL)\nProstate Volume: 48 cc (Moderately enlarged)"
+    }
+  },
+  {
+    "id": "PAT-024",
+    "name": "Zoya Akhtar",
+    "age": 40,
+    "gender": "Female",
+    "symptoms": "Excessive hair growth on face, irregular periods, acne",
+    "diagnosis": "Polycystic Ovary Syndrome (PCOS)",
+    "prescription": {
+      "doctor": "Dr. Anjali Mehta (Gynecologist)",
+      "text": "Rx:\n1. Tab. Metformin 500mg - 1 tab twice daily with meals.\n2. Tab. Spironolactone 50mg - 1 tab once daily for acne/hirsutism.",
+      "expected_medicines": [
+        {
+          "name": "Metformin",
+          "genericName": "Metformin Hydrochloride",
+          "dosage": "500mg",
+          "frequency": "Twice daily",
+          "duration": "Ongoing",
+          "instructions": "with meals"
+        },
+        {
+          "name": "Spironolactone",
+          "genericName": "Spironolactone",
+          "dosage": "50mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "for acne/hirsutism"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Hormonal Assessment",
+      "text": "Total Testosterone: 84 ng/dL (Reference: 15-70 ng/dL)\nLH/FSH Ratio: 2.8 (Reference: ~1.0)\nPelvic Ultrasound: Multiple small peripheral ovarian follicles ('string of pearls')"
+    }
+  },
+  {
+    "id": "PAT-025",
+    "name": "Umesh Yadav",
+    "age": 33,
+    "gender": "Male",
+    "symptoms": "Severe pain in right big toe, red, swollen, warm",
+    "diagnosis": "Acute Gout Attack",
+    "prescription": {
+      "doctor": "Dr. J. Mathew (Rheumatologist)",
+      "text": "Rx:\n1. Tab. Indomethacin 50mg - 1 tab three times daily after meals for 5 days.\n2. Tab. Colchicine 0.6mg - 1 tab twice daily for 3 days.",
+      "expected_medicines": [
+        {
+          "name": "Indomethacin",
+          "genericName": "Indomethacin",
+          "dosage": "50mg",
+          "frequency": "Three times daily",
+          "duration": "5 days",
+          "instructions": "after meals"
+        },
+        {
+          "name": "Colchicine",
+          "genericName": "Colchicine",
+          "dosage": "0.6mg",
+          "frequency": "Twice daily",
+          "duration": "3 days",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Joint Aspiration & Labs",
+      "text": "Synovial Fluid Analysis: Negatively birefringent needle-shaped crystals (monosodium urate). Serum Uric Acid: 9.4 mg/dL."
+    }
+  },
+  {
+    "id": "PAT-026",
+    "name": "Fatima Sheikh",
+    "age": 58,
+    "gender": "Female",
+    "symptoms": "Fever, chills, productive cough with rust-colored sputum",
+    "diagnosis": "Community-Acquired Pneumonia",
+    "prescription": {
+      "doctor": "Dr. S. Chawla (Pulmonologist)",
+      "text": "Rx:\n1. Tab. Azithromycin 500mg - 1 tab once daily for 5 days.\n2. Tab. Levofloxacin 750mg - 1 tab once daily for 5 days.",
+      "expected_medicines": [
+        {
+          "name": "Azithromycin",
+          "genericName": "Azithromycin Dihydrate",
+          "dosage": "500mg",
+          "frequency": "Once daily",
+          "duration": "5 days",
+          "instructions": ""
+        },
+        {
+          "name": "Levofloxacin",
+          "genericName": "Levofloxacin hemihydrate",
+          "dosage": "750mg",
+          "frequency": "Once daily",
+          "duration": "5 days",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Pulmonary Diagnostic",
+      "text": "Chest X-ray: Right lower lobe consolidation. WBC Count: 14,500 /mcL (Reference: 4,500-11,000 /mcL)"
+    }
+  },
+  {
+    "id": "PAT-027",
+    "name": "Gurpreet Singh",
+    "age": 48,
+    "gender": "Male",
+    "symptoms": "Severe lower back spasm, radiating down right leg",
+    "diagnosis": "Sciatica / Lumbar Radiculopathy",
+    "prescription": {
+      "doctor": "Dr. H. Gill (Orthopedic)",
+      "text": "Rx:\n1. Tab. Gabapentin 300mg - 1 tab once daily at bedtime (can titrate up).\n2. Tab. Cyclobenzaprine 10mg - 1 tab twice daily as needed for muscle spasms.",
+      "expected_medicines": [
+        {
+          "name": "Gabapentin",
+          "genericName": "Gabapentin",
+          "dosage": "300mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "at bedtime"
+        },
+        {
+          "name": "Cyclobenzaprine",
+          "genericName": "Cyclobenzaprine Hydrochloride",
+          "dosage": "10mg",
+          "frequency": "Twice daily as needed",
+          "duration": "As needed",
+          "instructions": "for muscle spasms"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "MRI Spine",
+      "text": "MRI Lumbar Spine: L4-L5 right paracentral disc herniation compressing the exiting right L5 nerve root."
+    }
+  },
+  {
+    "id": "PAT-028",
+    "name": "Rashmi Deshmukh",
+    "age": 29,
+    "gender": "Female",
+    "symptoms": "Fatigue, abdominal pain, gluten intolerance symptoms",
+    "diagnosis": "Celiac Disease",
+    "prescription": {
+      "doctor": "Dr. R. Verma (Gastroenterologist)",
+      "text": "Rx:\n1. Tab. Multivitamin with Iron - 1 tab once daily with food.\n2. Gluten-Free Diet - Mandatory restriction.",
+      "expected_medicines": [
+        {
+          "name": "Multivitamin with Iron",
+          "genericName": "Multivitamins + Iron",
+          "dosage": "1 tablet",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "with food"
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Serology & Biopsy",
+      "text": "tTG-IgA Antibody: 120 U/mL (Reference: < 15 U/mL)\nDuodenal Biopsy: Marsh Type 3c lesion with severe villous atrophy."
+    }
+  },
+  {
+    "id": "PAT-029",
+    "name": "Vijay Mallya",
+    "age": 66,
+    "gender": "Male",
+    "symptoms": "Tremor at rest, rigidity in right arm, slow gait",
+    "diagnosis": "Parkinson's Disease (early stage)",
+    "prescription": {
+      "doctor": "Dr. P. Gupta (Neurologist)",
+      "text": "Rx:\n1. Tab. Carbidopa/Levodopa 25/100mg - 1 tab three times daily.",
+      "expected_medicines": [
+        {
+          "name": "Carbidopa/Levodopa",
+          "genericName": "Carbidopa + Levodopa Anhydrous",
+          "dosage": "25/100mg",
+          "frequency": "Three times daily",
+          "duration": "Ongoing",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Neurological Exam",
+      "text": "UPDRS (Unified Parkinson's Disease Rating Scale) Score: 18. Positive response to acute levodopa challenge test."
+    }
+  },
+  {
+    "id": "PAT-030",
+    "name": "Jaspreet Kaur",
+    "age": 32,
+    "gender": "Female",
+    "symptoms": "Joint swelling in fingers, morning stiffness lasting 2 hours",
+    "diagnosis": "Rheumatoid Arthritis",
+    "prescription": {
+      "doctor": "Dr. J. Mathew (Rheumatologist)",
+      "text": "Rx:\n1. Tab. Methotrexate 15mg - Once weekly on Sundays (take Folic acid on Mondays).\n2. Tab. Folic Acid 1mg - Once weekly on Mondays.",
+      "expected_medicines": [
+        {
+          "name": "Methotrexate",
+          "genericName": "Methotrexate",
+          "dosage": "15mg",
+          "frequency": "Once weekly (Sundays)",
+          "duration": "Ongoing",
+          "instructions": "take Folic acid on Mondays"
+        },
+        {
+          "name": "Folic Acid",
+          "genericName": "Folic Acid",
+          "dosage": "1mg",
+          "frequency": "Once weekly (Mondays)",
+          "duration": "Ongoing",
+          "instructions": ""
+        }
+      ]
+    },
+    "lab_report": {
+      "report_type": "Rheumatology Panel",
+      "text": "Rheumatoid Factor (RF): 85 IU/mL (Reference: < 14 IU/mL)\nAnti-CCP Antibody: 110 U/mL (Reference: < 20 U/mL)\nESR: 42 mm/hr (Reference: < 20 mm/hr)"
+    }
+  }
+]

@@ -75,20 +75,22 @@ export interface ChatSession {
 
 // Simulated data for Mock Mode
 const MOCK_MEDICINES: Medicine[] = [
-  { id: "med-1", name: "Amoxicillin", genericName: "Amoxicillin Hydrate", dosage: "500mg", frequency: "Three times daily", duration: "7 days", instructions: "Take after meals", confidence: 0.98, reminderEnabled: true, createdAt: new Date(Date.now() - 86400000 * 2).toISOString() },
-  { id: "med-2", name: "Lisinopril", genericName: "Lisinopril Dihydrate", dosage: "10mg", frequency: "Once daily (Morning)", duration: "30 days", instructions: "Take on empty stomach", confidence: 0.95, reminderEnabled: true, createdAt: new Date(Date.now() - 86400000 * 5).toISOString() },
-  { id: "med-3", name: "Metformin", genericName: "Metformin Hydrochloride", dosage: "850mg", frequency: "Twice daily", duration: "90 days", instructions: "Take with dinner", confidence: 0.92, reminderEnabled: false, createdAt: new Date(Date.now() - 86400000 * 10).toISOString() }
+  { id: "med-1", name: "Aspirin", genericName: "Aspirin", dosage: "650mg", frequency: "Immediately (stat), repeat after 4 hours if needed", duration: "As needed", instructions: "Take tablet immediately. Dispense 4 tablets.", confidence: 0.98, reminderEnabled: true, createdAt: new Date(Date.now() - 86400000 * 2).toISOString() },
+  { id: "med-2", name: "Ergotamine + Caffeine", genericName: "Ergotamine Tartrate & Caffeine", dosage: "1mg + 100mg", frequency: "2 tablets immediately, then 1 tablet half hourly if nausea/vomiting (max 6/day)", duration: "As needed", instructions: "Take 2 tablets immediately, then 1 tablet half hourly. Max 6 in a day if nausea/vomiting. Dispense 6 tablets.", confidence: 0.96, reminderEnabled: true, createdAt: new Date(Date.now() - 86400000 * 5).toISOString() },
+  { id: "med-3", name: "Metoclopramide", genericName: "Metoclopramide Hydrochloride", dosage: "10mg", frequency: "Immediately (stat) and when required (SOS)", duration: "As needed", instructions: "Take immediately and then whenever required. Dispense 6 tablets.", confidence: 0.97, reminderEnabled: false, createdAt: new Date(Date.now() - 86400000 * 10).toISOString() }
 ];
 
 const MOCK_PRESCRIPTIONS: Prescription[] = [
   {
     id: "pres-1",
-    fileName: "prescription_june_2026.png",
+    fileName: "128-1.jpg",
     imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=400",
     extractedMedicines: [
-      { id: "ext-1", name: "Amoxicillin", genericName: "Amoxicillin Hydrate", dosage: "500mg", frequency: "Three times daily", duration: "7 days", instructions: "Take after meals", confidence: 0.98, reminderEnabled: true, createdAt: new Date().toISOString() }
+      { id: "ext-1", name: "Aspirin", genericName: "Aspirin", dosage: "650mg", frequency: "Immediately (stat), repeat after 4 hours if needed", duration: "As needed", instructions: "Take tablet immediately. Dispense 4 tablets.", confidence: 0.98, reminderEnabled: true, createdAt: new Date().toISOString() },
+      { id: "ext-2", name: "Ergotamine + Caffeine", genericName: "Ergotamine Tartrate & Caffeine", dosage: "1mg + 100mg", frequency: "2 tablets immediately, then 1 tablet half hourly if nausea/vomiting (max 6/day)", duration: "As needed", instructions: "Take 2 tablets immediately, then 1 tablet half hourly. Max 6 in a day if nausea/vomiting. Dispense 6 tablets.", confidence: 0.96, reminderEnabled: true, createdAt: new Date().toISOString() },
+      { id: "ext-3", name: "Metoclopramide", genericName: "Metoclopramide Hydrochloride", dosage: "10mg", frequency: "Immediately (stat) and when required (SOS)", duration: "As needed", instructions: "Take immediately and then whenever required. Dispense 6 tablets.", confidence: 0.97, reminderEnabled: false, createdAt: new Date().toISOString() }
     ],
-    confidenceScore: 0.98,
+    confidenceScore: 0.97,
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
   }
 ];
@@ -118,8 +120,8 @@ const MOCK_REPORTS: MedicalReport[] = [
 ];
 
 const MOCK_REMINDERS: Reminder[] = [
-  { id: "rem-1", type: "medicine", title: "Take Lisinopril 10mg", time: "08:00", date: new Date().toISOString().split("T")[0], status: "completed", createdAt: new Date().toISOString() },
-  { id: "rem-2", type: "medicine", title: "Take Amoxicillin 500mg", time: "14:00", date: new Date().toISOString().split("T")[0], status: "pending", createdAt: new Date().toISOString() },
+  { id: "rem-1", type: "medicine", title: "Take Aspirin 650mg", time: "08:00", date: new Date().toISOString().split("T")[0], status: "completed", createdAt: new Date().toISOString() },
+  { id: "rem-2", type: "medicine", title: "Take Ergotamine + Caffeine", time: "14:00", date: new Date().toISOString().split("T")[0], status: "pending", createdAt: new Date().toISOString() },
   { id: "rem-3", type: "appointment", title: "Dr. Evans (Cardiologist Checkup)", time: "11:30", date: new Date(Date.now() + 86400000).toISOString().split("T")[0], status: "pending", createdAt: new Date().toISOString() },
   { id: "rem-4", type: "checkup", title: "Fasting Blood Sugar Test", time: "07:00", date: new Date(Date.now() + 86400000 * 2).toISOString().split("T")[0], status: "pending", createdAt: new Date().toISOString() }
 ];
