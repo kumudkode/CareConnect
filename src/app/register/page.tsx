@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +39,7 @@ export default function RegisterPage() {
 
     setSubmitting(true);
     try {
-      await register(email, password, name);
+      await register(email, password, name, isAdmin);
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Failed to create account. Please check your network and try again.");
@@ -115,6 +116,36 @@ export default function RegisterPage() {
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-xs font-bold text-[#1E2C22]/85 uppercase tracking-wide mb-1.5">
+                Register As
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsAdmin(false)}
+                  className={`py-3 px-4 border rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer text-center ${
+                    !isAdmin
+                      ? "bg-[#1C4331] border-transparent text-white shadow-md shadow-[#1C4331]/10"
+                      : "bg-white border-[#E6E2D8] text-[#1E2C22] hover:bg-[#FAF7F2]"
+                  }`}
+                >
+                  Patient Account
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAdmin(true)}
+                  className={`py-3 px-4 border rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer text-center ${
+                    isAdmin
+                      ? "bg-[#1C4331] border-transparent text-white shadow-md shadow-[#1C4331]/10"
+                      : "bg-white border-[#E6E2D8] text-[#1E2C22] hover:bg-[#FAF7F2]"
+                  }`}
+                >
+                  Doctor / Admin
+                </button>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="name" className="block text-xs font-bold text-[#1E2C22]/85 uppercase tracking-wide mb-1.5">
                 Full Name

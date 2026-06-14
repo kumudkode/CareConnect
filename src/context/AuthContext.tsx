@@ -11,7 +11,8 @@ import {
   onAuthStateChanged,
   User as FirebaseUser
 } from "firebase/auth";
-import { auth, isMockMode } from "@/lib/firebase";
+import { auth, db, isMockMode } from "@/lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export interface UserProfile {
   uid: string;
@@ -26,7 +27,7 @@ interface AuthContextType {
   loading: boolean;
   isMock: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (email: string, password: string, name: string, isAdmin: boolean) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -50,14 +51,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     } else {
       // Real firebase auth
-      const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
+          let isAdminValue = firebaseUser.email === "admin@careconnect.com";
+          try {
+            const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+            if (userDoc.exists()) {
+              isAdminValue = !!userDoc.data().isAdmin;
+            }
+          } catch (e) {
+            console.error("Error fetching user role from Firestore:", e);
+          }
           const profile: UserProfile = {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
             displayName: firebaseUser.displayName,
             photoURL: firebaseUser.photoURL,
-            isAdmin: firebaseUser.email === "admin@careconnect.com" // Basic admin check
+            isAdmin: isAdminValue
           };
           setUser(profile);
         } else {
@@ -88,14 +98,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string, name: string, isAdmin: boolean) => {
     if (isMockMode) {
       if (password.length < 6) throw new Error("Password must be at least 6 characters");
       const mockProfile: UserProfile = {
         uid: "mock-uid-" + Math.random().toString(36).substr(2, 9),
         email: email,
         displayName: name,
-        isAdmin: email === "admin@careconnect.com",
+        isAdmin: isAdmin,
         photoURL: `https://api.dicebear.com/7.x/adventurer/svg?seed=${name}`
       };
       localStorage.setItem("careconnect_mock_user", JSON.stringify(mockProfile));
@@ -104,13 +114,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const credentials = await createUserWithEmailAndPassword(auth, email, password);
-    // You could update profile name here if needed
+    try {
+      await setDoc(doc(db, "users", credentials.user.uid), {
+        uid: credentials.user.uid,
+        email: credentials.user.email,
+        displayName: name,
+        isAdmin: isAdmin,
+        createdAt: new Date().toISOString()
+      });
+    } catch (e) {
+      console.error("Error setting user role in Firestore:", e);
+    }
+
     setUser({
       uid: credentials.user.uid,
       email: credentials.user.email,
       displayName: name,
       photoURL: credentials.user.photoURL,
-      isAdmin: credentials.user.email === "admin@careconnect.com"
+      isAdmin: isAdmin
     });
   };
 
