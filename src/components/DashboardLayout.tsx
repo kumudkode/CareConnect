@@ -149,7 +149,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               />
               <div className="flex-grow min-w-0">
                 <p className="text-sm font-semibold text-slate-200 truncate">{patientDisplayName}</p>
-                <p className="text-xs text-slate-500 truncate">Patient ({patientMeta.bloodGroup})</p>
+                <p className="text-xs text-slate-500 truncate">{user.isAdmin ? "Clinical Administrator" : `Patient (${patientMeta.bloodGroup})`}</p>
               </div>
             </div>
             
@@ -250,7 +250,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   />
                   <div className="flex-grow min-w-0">
                     <p className="text-sm font-semibold text-slate-200 truncate">{patientDisplayName}</p>
-                    <p className="text-xs text-slate-500 truncate">Patient ({patientMeta.bloodGroup})</p>
+                    <p className="text-xs text-slate-500 truncate">{user.isAdmin ? "Clinical Administrator" : `Patient (${patientMeta.bloodGroup})`}</p>
                   </div>
                 </div>
                 <button
